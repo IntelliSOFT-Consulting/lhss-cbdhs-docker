@@ -8,12 +8,21 @@ services:
       - openmrs-referenceapplication
     build: ./openmrs-esm-lhss-cbdhs
     image: intellisoftkenya/openmrs-esm-lhss-cbdhs
-    command: "npx openmrs develop --backend http://openmrs-referenceapplication:8080/openmrs"
+    command: "npx openmrs develop --backend http://kenyaemrdhs1.intellisoftkenya.com:8080 --host '0.0.0.0'"
     ports:
-      - 8099:8080
+      - 8080:8080
       - 8081:8081
+  # openmrs-mfe-app:
+  #   restart: "always"
+  #   image: openmrs/openmrs-reference-application-3-frontend
+  #   ports:
+  #     - "8081:80"
+  #   environment:
+  #     API_URL: http://kenyaemrdhs1.intellisoftkenya.com:8080
+  #     SPA_PATH: http://127.0.0.1:8081/openmrs/spa
 
   openmrs-referenceapplication-mysql:
+    container_name: openmrs-referenceapplication-mysql
     restart: "always"
     image: mysql:5.6
     command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
@@ -30,12 +39,13 @@ services:
       - openmrs-referenceapplication-mysql-data:/var/lib/mysql
  
   openmrs-referenceapplication:
+    container_name: openmrs-referenceapplication
     restart: "always"
     image: openmrs/openmrs-reference-application-distro:demo
     depends_on:
       - openmrs-referenceapplication-mysql
-    ports:
-      - "8080:8080"
+    # ports:
+      # - "8080:8080"
     environment:
       DB_DATABASE: ${MYSQL_DB:-openmrs}
       DB_HOST: openmrs-referenceapplication-mysql
